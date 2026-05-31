@@ -174,3 +174,41 @@ function initAccountLink() {
 }
 
 document.addEventListener('DOMContentLoaded', initAccountLink);
+
+
+/* ── ADMIN LINK ── */
+
+async function initAdminLink() {
+  const token = localStorage.getItem('access_token');
+  if (!token) return;
+
+  try {
+    const res = await fetch('https://q-tech-new-production.up.railway.app/api/users/me', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const user = await res.json();
+    if (!user.is_admin) return;
+
+    // Добавляем ссылку в десктопное меню
+    const menu = document.querySelector('.menu');
+    if (menu) {
+      const link = document.createElement('a');
+      link.href = 'admin.html';
+      link.textContent = '⚙️ Админ';
+      link.style.color = '#01C38D';
+      menu.appendChild(link);
+    }
+
+    // Добавляем в мобильное меню
+    const mobileMenu = document.querySelector('.mobile-menu');
+    if (mobileMenu) {
+      const link = document.createElement('a');
+      link.href = 'admin.html';
+      link.textContent = '⚙️ Админ панель';
+      link.style.color = '#01C38D';
+      mobileMenu.appendChild(link);
+    }
+  } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', initAdminLink);

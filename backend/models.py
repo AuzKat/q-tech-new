@@ -10,6 +10,7 @@ class User(Base):
     name = Column(String(100))
     email = Column(String(100), unique=True, index=True)
     password_hash = Column(String(255))
+    is_admin = Column(Boolean, default=False)  # ← добавь эту строку
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 

@@ -397,6 +397,141 @@ def cancel_order(order_id: int, authorization: Optional[str] = Header(None), db:
     return {"message": "Заказ отменён", "order_id": order_id, "status": "cancelled"}
 
 
+
+# ------------------------------------------------------------
+# АДМИН — вспомогательная функция
+# ------------------------------------------------------------
+
+def get_admin_user(authorization: Optional[str], db: Session):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing token")
+    token = authorization.replace("Bearer ", "")
+    user = get_current_user(token, db)
+    if not user.is_admin:
+        raise HTTPException(status_code=403, detail="Not an admin")
+    return user
+
+
+# ------------------------------------------------------------
+# АДМИН — ТОВАРЫ
+# ------------------------------------------------------------
+
+@app.get("/api/admin/products")
+def admin_get_products(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    get_admin_user(authorization, db)
+    products = db.query(models.Product).all()
+    return products
+
+@app.post("/api/admin/products")
+def admin_create_product(data: dict, authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    get_admin_user(authorization, db)
+    product = models.Product(**data)
+    db.add(product)
+    db.commit()
+    db.refresh(product)
+    return product
+
+@app.put("/api/admin/products/{product_id}")
+def admin_update_product(product_id: int, data: dict, authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    get_admin_user(authorization, db)
+    product = db.query(models.Product).filter(models.Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    for key, value in data.items():
+        setattr(product, key, value)
+    db.commit()
+    db.refresh(product)
+    return product
+
+@app.delete("/api/admin/products/{product_id}")
+def admin_delete_product(product_id: int, authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    get_admin_user(authorization, db)
+    product = db.query(models.Product).filter(models.Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    db.delete(product)
+    db.commit()
+    return {"message": "Товар удалён"}
+
+
+# ------------------------------------------------------------
+# АДМИН — ЗАКАЗЫ
+# ------------------------------------------------------------
+
+@app.get("/api/admin/orders")
+def admin_get_orders(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    get_admin_user(authorization, db)
+    orders = db.query(models.Order).order_by(models.Order.created_at.desc()).all()
+    result = []
+    for order in orders:
+        user = db.query(models.User).filter(models.User.id == order.user_id).first()
+        items = db.query(models.OrderItem).filter(models.OrderItem.order_id == order.id).all()
+        result.append({
+            "id": order.id,
+            "order_number": order.order_number,
+            "status": order.status,
+            "total_amount": order.total_amount,
+            "delivery_method": order.delivery_method,
+            "payment_method": order.payment_method,
+            "created_at": order.created_at.isoformat(),
+            "user": {"id": user.id, "name": user.name, "email": user.email} if user else None,
+            "items": [{"title": i.title, "price": i.price, "quantity": i.quantity, "image": i.image} for i in items]
+        })
+    return result
+
+@app.put("/api/admin/orders/{order_id}")
+def admin_update_order(order_id: int, data: dict, authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    get_admin_user(authorization, db)
+    order = db.query(models.Order).filter(models.Order.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    order.status = data.get("status", order.status)
+    db.commit()
+    return {"message": "Статус обновлён", "status": order.status}
+
+
+# ------------------------------------------------------------
+# АДМИН — ПОЛЬЗОВАТЕЛИ
+# ------------------------------------------------------------
+
+@app.get("/api/admin/users")
+def admin_get_users(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    get_admin_user(authorization, db)
+    users = db.query(models.User).all()
+    return [{"id": u.id, "name": u.name, "email": u.email, "is_admin": u.is_admin, "created_at": u.created_at} for u in users]
+
+
+# ------------------------------------------------------------
+# АДМИН — СТАТИСТИКА
+# ------------------------------------------------------------
+
+@app.get("/api/admin/stats")
+def admin_get_stats(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    get_admin_user(authorization, db)
+
+    from sqlalchemy import func as sqlfunc
+
+    total_orders = db.query(models.Order).count()
+    total_revenue = db.query(sqlfunc.sum(models.Order.total_amount)).scalar() or 0
+    total_users = db.query(models.User).count()
+    total_products = db.query(models.Product).count()
+
+    # Топ 5 товаров по количеству заказов
+    top_products = (
+        db.query(models.OrderItem.title, sqlfunc.sum(models.OrderItem.quantity).label("total_qty"))
+        .group_by(models.OrderItem.title)
+        .order_by(sqlfunc.sum(models.OrderItem.quantity).desc())
+        .limit(5)
+        .all()
+    )
+
+    return {
+        "total_orders": total_orders,
+        "total_revenue": total_revenue,
+        "total_users": total_users,
+        "total_products": total_products,
+        "top_products": [{"title": t, "qty": q} for t, q in top_products]
+    }
 # ------------------------------------------------------------
 # Запуск
 # ------------------------------------------------------------
