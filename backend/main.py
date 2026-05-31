@@ -95,7 +95,7 @@ def get_me(authorization: Optional[str] = Header(None), db: Session = Depends(ge
         raise HTTPException(status_code=401, detail="Missing token")
     token = authorization.replace("Bearer ", "")
     user = get_current_user(token, db)
-    return {"id": user.id, "name": user.name, "email": user.email, "created_at": user.created_at}
+    return {"id": user.id, "name": user.name, "email": user.email, "created_at": user.created_at, "is_admin": user.is_admin}
 
 
 # ------------------------------------------------------------
