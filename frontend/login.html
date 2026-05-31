@@ -165,7 +165,9 @@
 
     // Проверка, если уже залогинены — сразу в аккаунт
     if (window.isLoggedIn && window.isLoggedIn()) {
-        window.location.href = 'account.html';
+    window.getCurrentUser()
+        .then(() => { window.location.href = 'account.html'; })
+        .catch(() => { localStorage.removeItem('access_token'); });
     }
 
     // Обработка Enter

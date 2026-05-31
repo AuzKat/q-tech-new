@@ -156,24 +156,26 @@
 
     // Проверка авторизации
     async function checkAuth() {
-        if (!window.isLoggedIn || !window.isLoggedIn()) {
-            window.location.href = 'login.html';
-            return false;
-        }
-        try {
-            currentUser = await window.getCurrentUser();
-            document.getElementById('acc-name-display').textContent = currentUser.name || currentUser.email;
-            document.getElementById('acc-email-display').textContent = currentUser.email;
-            const initials = (currentUser.name || currentUser.email).substring(0, 2).toUpperCase();
-            document.getElementById('acc-avatar-initials').textContent = initials;
-            document.getElementById('profile-name').value = currentUser.name || '';
-            document.getElementById('profile-email').value = currentUser.email;
-            return true;
-        } catch(e) {
-            window.location.href = 'login.html';
-            return false;
-        }
+    if (!window.isLoggedIn || !window.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return false;
     }
+    try {
+        currentUser = await window.getCurrentUser();
+        document.getElementById('acc-name-display').textContent = currentUser.name || currentUser.email;
+        document.getElementById('acc-email-display').textContent = currentUser.email;
+        const initials = (currentUser.name || currentUser.email).substring(0, 2).toUpperCase();
+        document.getElementById('acc-avatar-initials').textContent = initials;
+        document.getElementById('profile-name').value = currentUser.name || '';
+        document.getElementById('profile-email').value = currentUser.email;
+        return true;
+    } catch(e) {
+        // Токен невалидный — чистим и редиректим
+        localStorage.removeItem('access_token');
+        window.location.href = 'login.html';
+        return false;
+    }
+}
 
     // Загрузка заказов
     async function loadOrders() {
