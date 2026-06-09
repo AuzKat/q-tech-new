@@ -194,7 +194,7 @@ async function initAdminLink() {
     if (menu) {
       const link = document.createElement('a');
       link.href = 'admin.html';
-      link.textContent = '⚙️ Админ';
+      link.textContent = 'Админ-панель';
       link.style.color = '#01C38D';
       menu.appendChild(link);
     }
