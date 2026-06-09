@@ -271,8 +271,31 @@ body {
 }
 
 @media (max-width: 900px) {
+  .search-box {
+    position: static;
+  }
+
   .search-box.active input {
-    display: none;
+    position: fixed;
+    top: 14px;
+    left: 50px;
+    right: 50px;
+    width: auto !important;
+    opacity: 1;
+    display: block;
+    z-index: 9999;
+    background: #11182B;
+    border-color: #01C38D;
+    margin: 0;
+  }
+
+  #search-dropdown {
+    position: fixed;
+    top: 62px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    z-index: 9998;
   }
 }
 
@@ -607,14 +630,6 @@ body {
 @media (max-width: 900px) {
   .search-box.active input {
     display: none;
-  }
-
-  #search-dropdown {
-    position: fixed !important;
-    top: 70px !important;
-    left: 8px !important;
-    right: 8px !important;
-    width: auto !important;
   }
 }
 
