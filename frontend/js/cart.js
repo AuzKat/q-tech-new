@@ -107,7 +107,6 @@ function initCartUI() {
 
   if (!toggle || !modal) return;
 
-  document.body.appendChild(modal);
 
   /* open / close */
   toggle.addEventListener('click', () => {
