@@ -728,8 +728,7 @@ body {
   }
 
   .footer-columns {
-    flex-direction: column;  /* ← добавь это */
-    gap: 24px;
+    gap: 40px;
     justify-content: center;
     flex-wrap: wrap;
   }
