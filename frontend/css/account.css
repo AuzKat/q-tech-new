@@ -158,7 +158,7 @@
 
 .acc-logout-btn {
   width: 100%;
-  padding: 11px;
+  padding: 13px;
   border-radius: 12px;
   border: 1px solid rgba(255,90,90,0.2);
   background: transparent;
@@ -167,11 +167,19 @@
   font-size: 14px;
   cursor: pointer;
   transition: 0.25s;
+  min-height: 44px;
 }
 
 .acc-logout-btn:hover {
   background: rgba(255,107,107,0.08);
   border-color: #ff6b6b;
+}
+
+/* Tap-state для мобильных */
+.acc-logout-btn:active {
+  background: rgba(255,107,107,0.15);
+  border-color: #ff6b6b;
+  transform: scale(0.98);
 }
 
 /* ── MAIN CONTENT ── */
@@ -493,10 +501,10 @@
 .security-blocks { display: flex; flex-direction: column; gap: 20px; }
 
 .security-block {
-  background: transparent;
-  border: none;
+  background: #1e2433;
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: 18px;
-  padding: 24px 0;
+  padding: 24px;
 }
 
 .security-block h4 { font-size: 18px; color: white; margin-bottom: 8px; }
@@ -512,35 +520,40 @@
 }
 
 /* Toggle switch */
-.toggle-wrap { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
+.toggle-wrap { position: relative; width: 52px; height: 28px; flex-shrink: 0; }
 
 .toggle-input {
   opacity: 0;
   position: absolute;
-  width: 0; height: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  cursor: pointer;
+  margin: 0;
 }
 
 .toggle-label {
   position: absolute;
   inset: 0;
   background: #2a2f3f;
-  border-radius: 13px;
+  border-radius: 14px;
   cursor: pointer;
   transition: 0.3s ease;
+  z-index: 0;
 }
 
 .toggle-label::after {
   content: '';
   position: absolute;
-  top: 3px; left: 3px;
+  top: 4px; left: 4px;
   width: 20px; height: 20px;
   border-radius: 50%;
   background: #5f6675;
   transition: 0.3s ease;
 }
 
-.toggle-input:checked + .toggle-label { background: rgba(1,195,141,0.2); border: 1px solid #01C38D; }
-.toggle-input:checked + .toggle-label::after { left: 23px; background: #01C38D; }
+.toggle-input:checked + .toggle-label { background: rgba(1,195,141,0.25); border: 1.5px solid #01C38D; }
+.toggle-input:checked + .toggle-label::after { left: 26px; background: #01C38D; }
 
 /* Sessions */
 .sessions-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
@@ -593,9 +606,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 0;
+  padding: 20px 0;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   gap: 20px;
+  min-height: 60px;
 }
 
 .notif-item:last-child { border-bottom: none; }
@@ -625,6 +639,7 @@
   .acc-form-group.full { grid-column: 1; }
   .order-track-bar { display: none; }
 }
+
 /* ── DATE INPUT ICON WHITE ── */
 input[type="date"].acc-input {
   color-scheme: dark;
@@ -639,7 +654,193 @@ input[type="date"].acc-input::-webkit-calendar-picker-indicator {
 input[type="date"].acc-input::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
 }
-/* Position picker to bottom-right under the icon */
 input[type="date"].acc-input::-webkit-datetime-edit {
   flex: 1;
 }
+
+/* ══════════════════════════════════════
+   ACCOUNT MOBILE — полноэкранный режим
+   ══════════════════════════════════════ */
+
+@media (max-width: 900px) {
+
+  /* Убираем сетку, делаем колонку */
+  .account-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 0 100px;
+  }
+
+  /* Скрываем десктопный sidebar полностью */
+  .account-sidebar {
+    display: none !important;
+  }
+
+  /* Контент на всю ширину */
+  .account-main {
+    width: 100%;
+    min-height: auto;
+  }
+
+  /* Таб-контент: отступы как у страницы */
+  .acc-tab {
+    padding: 24px 0 0;
+  }
+
+  /* ── МОБИЛЬНАЯ ШАПКА ПРОФИЛЯ ── */
+  .acc-mobile-header {
+    display: flex !important;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 16px;
+    background: rgba(17,24,43,0.7);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .acc-mobile-header .acc-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .acc-mobile-header .acc-name {
+    font-size: 15px;
+  }
+
+  .acc-mobile-header .acc-email {
+    font-size: 12px;
+  }
+
+  /* ── НИЖНИЙ ТАБ-БАР ── */
+  .acc-mobile-tabbar {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    background: rgba(17, 24, 43, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .acc-tabbar-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 4px;
+    border: none;
+    background: transparent;
+    color: #5f6675;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s;
+    border-radius: 10px;
+    min-height: 52px;
+    justify-content: center;
+  }
+
+  .acc-tabbar-item .tab-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .acc-tabbar-item.active {
+    color: #01C38D;
+  }
+
+  .acc-tabbar-item:active {
+    background: rgba(1,195,141,0.08);
+  }
+
+  /* ── ПРОЧИЕ МОБИЛЬНЫЕ ПРАВКИ ── */
+
+  .acc-tab-header h2 {
+    font-size: 24px;
+  }
+
+  .acc-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .acc-stat-card {
+    padding: 16px 12px;
+  }
+
+  .acc-stat-val {
+    font-size: 22px;
+  }
+
+  .acc-menu-item {
+    min-height: 48px;
+    padding: 12px 14px;
+  }
+
+  .acc-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .acc-form-group.full {
+    grid-column: 1;
+  }
+
+  .acc-form-actions {
+    flex-direction: column;
+  }
+
+  .acc-save-btn,
+  .acc-cancel-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .acc-bonus-block {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .acc-bonus-left {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Кнопка выхода в мобильном — внизу контента, выше таббара */
+  .acc-mobile-logout {
+    display: block !important;
+    width: 100%;
+    margin-top: 32px;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,90,90,0.25);
+    background: transparent;
+    color: #ff6b6b;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+  }
+
+  .acc-mobile-logout:active {
+    background: rgba(255,107,107,0.1);
+  }
+}
+
+/* Скрываем мобильные элементы на десктопе */
+.acc-mobile-header { display: none; }
+.acc-mobile-tabbar { display: none; }
+.acc-mobile-logout { display: none; }

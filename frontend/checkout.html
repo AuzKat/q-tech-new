@@ -438,23 +438,72 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
-      .checkout-grid { grid-template-columns: 1fr; }
+      .checkout-grid {
+        grid-template-columns: 1fr;
+        overflow: visible;
+      }
       .order-summary { position: static; }
       .co-form-grid { grid-template-columns: 1fr; }
       .co-form-group.full { grid-column: 1; }
-      .payment-options { grid-template-columns: 1fr; }
-      .checkout-wrap { padding: 24px 0 60px; }
-      .co-block { padding: 20px 16px; border-radius: 16px; box-sizing: border-box; width: 100%; }
+      .payment-options { grid-template-columns: 1fr 1fr; }
+      .checkout-wrap {
+        padding: 24px 0 80px;
+        overflow: visible;
+      }
+      .co-block {
+        padding: 20px 16px;
+        border-radius: 16px;
+        box-sizing: border-box;
+        width: 100%;
+        overflow: visible;
+      }
       .checkout-title { font-size: 24px; margin-bottom: 20px; }
-      .delivery-option { padding: 12px 14px; gap: 10px; box-sizing: border-box; width: 100%; }
+      .delivery-option {
+        padding: 14px;
+        gap: 10px;
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 64px;
+      }
       .delivery-option-price { flex-shrink: 0; white-space: nowrap; }
-      .co-input { font-size: 16px; width: 100%; box-sizing: border-box; }
-      .promo-row { flex-wrap: nowrap; }
-      .promo-row .co-input { min-width: 0; }
+      .co-input {
+        font-size: 16px; /* Предотвращает зум на iOS */
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .promo-row { flex-wrap: nowrap; gap: 8px; }
+      .promo-row .co-input { min-width: 0; flex: 1; }
+      .promo-btn { padding: 12px 14px; white-space: nowrap; }
       .checkout-grid > div { min-width: 0; max-width: 100%; }
       .co-form-grid { width: 100%; }
       .summary-item-price { white-space: nowrap; flex-shrink: 0; }
       .summary-row span:last-child { white-space: nowrap; flex-shrink: 0; }
+
+      /* Исправляем карточку оплаты */
+      .payment-option {
+        padding: 14px 10px;
+        min-height: 90px;
+      }
+
+      /* Успешный оверлей */
+      .success-card {
+        padding: 36px 24px;
+        border-radius: 24px;
+      }
+      .success-card h2 { font-size: 22px; }
+      .success-btns { flex-direction: column; }
+      .success-btn-primary,
+      .success-btn-secondary { width: 100%; }
+
+      /* SBP QR блок */
+      #sbp-qr-block canvas {
+        width: 160px !important;
+        height: 160px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .payment-options { grid-template-columns: 1fr; }
     }
   </style>
 </head>

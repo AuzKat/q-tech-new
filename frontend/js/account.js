@@ -6,6 +6,7 @@
 
 const SESSIONS_KEY = 'qtech_sessions';
 const LOGGED_IN_KEY = 'qtech_logged_in';
+const NOTIF_KEY = 'qtech_notifications';
 
 function getDefaultSessions() {
   return [
@@ -32,11 +33,30 @@ function endSession(id) {
   saveSessions(getSessions().filter(s => s.id !== id));
 }
 
+/* ── NOTIFICATIONS STATE ── */
+
+function getNotifState() {
+  try {
+    const stored = localStorage.getItem(NOTIF_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return { 'notif-order': true, 'notif-promo': true, 'notif-news': false, 'notif-review': true };
+}
+
+function saveNotifState(state) {
+  localStorage.setItem(NOTIF_KEY, JSON.stringify(state));
+}
+
 /* ── AUTH ── */
 
 function logout() {
-  localStorage.setItem(LOGGED_IN_KEY, 'false');
-  window.location.href = 'index.html';
+  // Используем api.js logout если доступен, иначе делаем сами
+  if (window.logout && window.logout !== logout) {
+    window.logout();
+  } else {
+    localStorage.removeItem('access_token');
+    window.location.href = 'login.html';
+  }
 }
 
 /* ── INIT ── */
@@ -47,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSaveToast();
   initSessionsPanel();
   initLogoutBtn();
+  initNotifications();
 });
 
 /* ── TABS ── */
@@ -136,15 +157,67 @@ function renderSessions() {
 /* ── LOGOUT ── */
 
 function initLogoutBtn() {
+  // Основная кнопка в сайдбаре
   const btn = document.querySelector('.acc-logout-btn');
-  if (!btn) return;
-  btn.addEventListener('click', logout);
+  if (btn) {
+    btn.addEventListener('click', () => {
+      localStorage.removeItem('access_token');
+      window.location.href = 'login.html';
+    });
+  }
+
+  // Кнопка в мобильном меню
+  const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+  if (mobileLogoutBtn) {
+    mobileLogoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('access_token');
+      window.location.href = 'login.html';
+    });
+  }
+}
+
+/* ── NOTIFICATIONS ── */
+
+function initNotifications() {
+  const state = getNotifState();
+
+  // Восстанавливаем состояние всех тумблеров
+  Object.entries(state).forEach(([id, checked]) => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.checked = checked;
+    }
+  });
+
+  // Навешиваем обработчики на все toggle-input
+  document.querySelectorAll('.toggle-input').forEach(toggle => {
+    toggle.addEventListener('change', () => {
+      const currentState = getNotifState();
+      currentState[toggle.id] = toggle.checked;
+      saveNotifState(currentState);
+    });
+  });
+
+  // Кнопка сохранения уведомлений
+  const saveNotifBtn = document.getElementById('save-notif-btn');
+  if (saveNotifBtn) {
+    saveNotifBtn.addEventListener('click', () => {
+      const currentState = {};
+      document.querySelectorAll('.toggle-input').forEach(toggle => {
+        currentState[toggle.id] = toggle.checked;
+      });
+      saveNotifState(currentState);
+      showToast('Настройки уведомлений сохранены');
+    });
+  }
 }
 
 /* ── SAVE TOAST ── */
 
 function initSaveToast() {
   document.querySelectorAll('.acc-save-btn').forEach(btn => {
+    // Исключаем кнопку уведомлений — у неё свой обработчик
+    if (btn.id === 'save-notif-btn') return;
     btn.addEventListener('click', () => showToast('Изменения сохранены'));
   });
 }

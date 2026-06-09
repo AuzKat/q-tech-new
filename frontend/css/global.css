@@ -270,13 +270,38 @@ body {
   pointer-events: auto;
 }
 
-@media (max-width: 900px) {
+.search-box input::placeholder { color: #8b90a0; }
+
+/* Мобильный поиск: открывается вниз как абсолютный блок */
+@media (max-width: 600px) {
+  .search-box {
+    position: static;
+  }
+
+  .search-box input {
+    position: fixed;
+    top: 64px;
+    left: 16px;
+    right: 16px;
+    width: auto !important;
+    height: 44px;
+    border-radius: 14px;
+    background: #11182B;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 0 !important;
+    margin: 0;
+    z-index: 250;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
   .search-box.active input {
-    display: none;
+    opacity: 1;
+    padding: 0 16px !important;
+    pointer-events: auto;
   }
 }
-
-.search-box input::placeholder { color: #8b90a0; }
 
 /* ── CART MODAL ── */
 
@@ -613,10 +638,39 @@ body {
   }
 
   .cart-modal {
-  width: 300px;
-  right: auto;
-  left: 60%;
-  transform: translateX(-50%);
+    width: 300px;
+    right: -10px;
+  }
+}
+
+/* ── MOBILE ICONS ── */
+@media (max-width: 600px) {
+  .icons {
+    gap: 10px;
+  }
+
+  /* Скрываем телефон на очень маленьких экранах для экономии места */
+  .icons > a[href^="tel"] {
+    display: none;
+  }
+
+  .icon-wrap img {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Увеличиваем тап-зону для иконок */
+  .icon-wrap {
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .burger-btn {
+    min-width: 36px;
+    min-height: 36px;
   }
 }
 
@@ -651,11 +705,41 @@ body {
     padding-bottom: env(safe-area-inset-bottom, 16px);
   }
 
-  .footer-grid {
-    flex-direction: column;
-    gap: 32px;
+  /* ── ФУТЕР МОБИЛЬ: выравнивание по центру ── */
+  .footer-wrap {
+    padding: 48px 0 32px;
   }
 
-  .footer-columns { gap: 30px; }
-  .footer-block h4 { margin-bottom: 16px; }
+  .footer-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    text-align: center;
+  }
+
+  .footer-block {
+    align-items: center;
+    width: 100%;
+  }
+
+  .footer-block h4 {
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .footer-columns {
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .footer-column {
+    align-items: center;
+    gap: 12px;
+  }
+
+  .footer-copy {
+    font-size: 13px;
+    padding-top: 24px;
+  }
 }

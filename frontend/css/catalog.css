@@ -376,7 +376,7 @@
   cursor: pointer;
 }
 
-/* Checkboxes */
+/* ── FILTER ITEMS: увеличенная тап-зона ── */
 
 .filter-list {
   display: flex;
@@ -390,11 +390,14 @@
   gap: 10px;
   cursor: pointer;
   user-select: none;
+  /* Увеличенная тап-зона */
+  min-height: 44px;
+  padding: 4px 0;
 }
 
 .filter-item input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   accent-color: #01C38D;
   cursor: pointer;
   flex-shrink: 0;
@@ -578,6 +581,69 @@
 .filter-drawer-close:hover { color: white; }
 
 /* ── ADAPTIVE ── */
+
+/* ── RATING FILTER ── */
+.rating-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1.5px solid transparent;
+}
+
+.rating-filter-item:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.rating-filter-item.active {
+  border-color: rgba(1,195,141,0.35);
+  background: rgba(1,195,141,0.06);
+}
+
+.rating-filter-item input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #01C38D;
+  flex-shrink: 0;
+}
+
+.rating-stars-sm {
+  display: flex;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.rating-stars-sm .s { color: #2a2f3f; }
+.rating-stars-sm .s.on { color: #f5c518; }
+
+/* Badge filter */
+.badge-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge-filter-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #2a2f3f;
+  background: transparent;
+  color: #5f6675;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.badge-filter-btn:hover { border-color: #01C38D; color: #01C38D; }
+.badge-filter-btn.active { border-color: #01C38D; background: rgba(1,195,141,0.08); color: white; }
 
 @media (max-width: 1200px) {
   .products-grid-catalog { grid-template-columns: repeat(2, 1fr); }

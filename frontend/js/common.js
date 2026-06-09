@@ -120,7 +120,7 @@ function positionDropdown() {
       display: none;
     `;
     searchBox.style.position = 'relative';
-    document.body.appendChild(dropdown);
+    searchBox.appendChild(dropdown);
   }
 }
 

@@ -19,7 +19,9 @@ let activeFilters = {
   priceMin: 0,
   inStock: false,
   sort: 'popular',
-   search: '',
+  search: '',
+  minRating: 0,
+  badges: [],
 };
 
 function initCatalog() {
@@ -87,6 +89,14 @@ function renderProducts() {
 
   if (activeFilters.inStock) {
     items = items.filter(p => p.inStock);
+  }
+
+  if (activeFilters.minRating > 0) {
+    items = items.filter(p => p.rating >= activeFilters.minRating);
+  }
+
+  if (activeFilters.badges.length) {
+    items = items.filter(p => activeFilters.badges.includes(p.badge));
   }
 
   if (activeFilters.search) {
@@ -224,6 +234,10 @@ function buildFilters() {
   buildBrandFilters('.filter-drawer');
   buildPriceFilter('.sidebar');
   buildPriceFilter('.filter-drawer');
+  buildRatingFilter('.sidebar');
+  buildRatingFilter('.filter-drawer');
+  buildBadgeFilter('.sidebar');
+  buildBadgeFilter('.filter-drawer');
   bindFilterActions();
 }
 
@@ -314,9 +328,86 @@ function updateSliderTrack(slider) {
 function bindFilterActions() {
   document.querySelectorAll('.filter-reset').forEach(btn => {
     btn.addEventListener('click', () => {
-      activeFilters = { brands: [], priceMin: 0, priceMax: Infinity, inStock: false, sort: activeFilters.sort };
+      activeFilters = { brands: [], priceMin: 0, priceMax: Infinity, inStock: false, sort: activeFilters.sort, search: activeFilters.search, minRating: 0, badges: [] };
       document.querySelectorAll('.brand-check').forEach(cb => cb.checked = false);
       document.querySelectorAll('.instock-check').forEach(cb => cb.checked = false);
+      document.querySelectorAll('.rating-radio').forEach(r => r.checked = false);
+      document.querySelectorAll('.rating-filter-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.badge-filter-btn').forEach(b => b.classList.remove('active'));
+      renderProducts();
+    });
+  });
+}
+
+/* ── RATING FILTER ── */
+
+function buildRatingFilter(parentSelector) {
+  const parent = document.querySelector(parentSelector);
+  if (!parent) return;
+
+  const ratingSection = parent.querySelector('.rating-filter-section');
+  if (!ratingSection) return;
+
+  const container = ratingSection.querySelector('.rating-filter-list');
+  if (!container) return;
+
+  const ratings = [4, 3, 2];
+  container.innerHTML = ratings.map(r => `
+    <label class="rating-filter-item" data-rating="${r}">
+      <input type="radio" name="rating-filter-${parentSelector.replace('.', '')}" class="rating-radio" value="${r}">
+      <div class="rating-stars-sm">
+        ${[1,2,3,4,5].map(i => `<span class="s${i <= r ? ' on' : ''}">★</span>`).join('')}
+      </div>
+      <span style="font-size:13px;color:#9795B5;">и выше</span>
+    </label>
+  `).join('');
+
+  container.querySelectorAll('.rating-radio').forEach(radio => {
+    radio.addEventListener('change', () => {
+      activeFilters.minRating = Number(radio.value);
+      container.querySelectorAll('.rating-filter-item').forEach(i => i.classList.remove('active'));
+      radio.closest('.rating-filter-item').classList.add('active');
+      renderProducts();
+    });
+  });
+}
+
+/* ── BADGE FILTER ── */
+
+function buildBadgeFilter(parentSelector) {
+  const parent = document.querySelector(parentSelector);
+  if (!parent) return;
+
+  const badgeSection = parent.querySelector('.badge-filter-section');
+  if (!badgeSection) return;
+
+  const container = badgeSection.querySelector('.badge-filter-list');
+  if (!container) return;
+
+  const pool = activeCategory === 'all'
+    ? PRODUCTS
+    : PRODUCTS.filter(p => p.category === activeCategory);
+
+  const badgeDefs = [
+    { key: 'hit',  label: '🔥 Хиты' },
+    { key: 'new',  label: '✨ Новинки' },
+    { key: 'sale', label: '🏷️ Скидки' },
+  ];
+
+  const available = badgeDefs.filter(b => pool.some(p => p.badge === b.key));
+  if (!available.length) {
+    badgeSection.style.display = 'none';
+    return;
+  }
+
+  container.innerHTML = available.map(b => `
+    <button class="badge-filter-btn" data-badge="${b.key}">${b.label}</button>
+  `).join('');
+
+  container.querySelectorAll('.badge-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+      activeFilters.badges = [...container.querySelectorAll('.badge-filter-btn.active')].map(b => b.dataset.badge);
       renderProducts();
     });
   });

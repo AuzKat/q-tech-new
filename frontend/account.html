@@ -122,7 +122,7 @@
                     <div class="acc-form-group"><label>Новый пароль</label><input type="password" id="new-password" class="acc-input"></div>
                     <div class="acc-form-group"><label>Подтвердите пароль</label><input type="password" id="confirm-password" class="acc-input"></div>
                 </div>
-                <button class="acc-save-btn" id="change-password-btn" style="margin-top: 32px;">Изменить пароль</button>
+                <button class="acc-save-btn" id="change-password-btn">Изменить пароль</button>
             </div>
         </div>
 
@@ -149,6 +149,7 @@
 <div class="bg-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
 
 <script src="js/api.js"></script>
+<script src="js/products.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/common.js"></script>
 <script>
@@ -157,26 +158,24 @@
 
     // Проверка авторизации
     async function checkAuth() {
-    if (!window.isLoggedIn || !window.isLoggedIn()) {
-        window.location.href = 'login.html';
-        return false;
+        if (!window.isLoggedIn || !window.isLoggedIn()) {
+            window.location.href = 'login.html';
+            return false;
+        }
+        try {
+            currentUser = await window.getCurrentUser();
+            document.getElementById('acc-name-display').textContent = currentUser.name || currentUser.email;
+            document.getElementById('acc-email-display').textContent = currentUser.email;
+            const initials = (currentUser.name || currentUser.email).substring(0, 2).toUpperCase();
+            document.getElementById('acc-avatar-initials').textContent = initials;
+            document.getElementById('profile-name').value = currentUser.name || '';
+            document.getElementById('profile-email').value = currentUser.email;
+            return true;
+        } catch(e) {
+            window.location.href = 'login.html';
+            return false;
+        }
     }
-    try {
-        currentUser = await window.getCurrentUser();
-        document.getElementById('acc-name-display').textContent = currentUser.name || currentUser.email;
-        document.getElementById('acc-email-display').textContent = currentUser.email;
-        const initials = (currentUser.name || currentUser.email).substring(0, 2).toUpperCase();
-        document.getElementById('acc-avatar-initials').textContent = initials;
-        document.getElementById('profile-name').value = currentUser.name || '';
-        document.getElementById('profile-email').value = currentUser.email;
-        return true;
-    } catch(e) {
-        // Токен невалидный — чистим и редиректим
-        localStorage.removeItem('access_token');
-        window.location.href = 'login.html';
-        return false;
-    }
-}
 
     // Загрузка заказов
     async function loadOrders() {
@@ -348,4 +347,3 @@
 </script>
 </body>
 </html>
-
