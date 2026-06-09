@@ -728,7 +728,7 @@ body {
   }
 
   .footer-columns {
-    gap: 40px;
+    gap: 60px;
     justify-content: center;
     flex-wrap: wrap;
   }
@@ -736,6 +736,7 @@ body {
   .footer-column {
     align-items: center;
     gap: 12px;
+    min-width: 140px;
   }
 
   .footer-copy {
