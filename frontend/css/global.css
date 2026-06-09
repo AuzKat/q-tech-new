@@ -16,7 +16,7 @@ body {
   background: #191C29;
   color: white;
   font-family: 'DM Sans', sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .container {
@@ -605,18 +605,16 @@ body {
 /* ── TABLET ── */
 
 @media (max-width: 900px) {
-  .menu { display: none; }
-  .burger-btn { display: flex; }
-
   .search-box.active input {
-    width: 160px;
+    display: none;
   }
 
-  .cart-modal {
-  width: 300px;
-  right: auto;
-  left: 60%;
-  transform: translateX(-50%);
+  #search-dropdown {
+    position: fixed !important;
+    top: 70px !important;
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
   }
 }
 
