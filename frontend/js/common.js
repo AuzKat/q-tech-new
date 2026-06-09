@@ -58,11 +58,15 @@ function initSearch() {
 });
 
   document.addEventListener('click', e => {
-    if (!searchBox.contains(e.target)) {
-      searchBox.classList.remove('active');
-      hideSuggestions();
-    }
-  });
+  const mobileDropdown = document.getElementById('search-dropdown');
+  if (
+    !searchBox.contains(e.target) &&
+    !(mobileDropdown && mobileDropdown.contains(e.target))
+  ) {
+    searchBox.classList.remove('active');
+    hideSuggestions();
+  }
+});
 
   // Живой поиск при вводе
   searchInput.addEventListener('input', () => {
