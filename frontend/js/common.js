@@ -70,6 +70,7 @@ function initSearch() {
 
   // Живой поиск при вводе
   searchInput.addEventListener('input', () => {
+    if (window.innerWidth <= 900) return;
     const v = searchInput.value.trim();
     if (v.length < 2) { hideSuggestions(); return; }
     showSuggestions(v);
