@@ -635,6 +635,7 @@ body {
     overflow-y: auto;
     padding: 20px;
     z-index: 9999;
+    pointer-events: auto;
   }
 
   .cart-modal .cart-items {
@@ -654,3 +655,4 @@ body {
   .footer-columns { gap: 30px; }
   .footer-block h4 { margin-bottom: 16px; }
 }
+

@@ -126,11 +126,8 @@ function initCartUI() {
   document.addEventListener('click', e => {
     if (!modal.contains(e.target) && !toggle.contains(e.target)) {
       modal.classList.remove('active');
-      document.body.style.overflow = '';
-      const overlay = document.getElementById('cart-overlay');
-      if (overlay) overlay.remove();
     }
-  });
+  }, { capture: false });
 
   /* update badge */
   function updateBadge() {
