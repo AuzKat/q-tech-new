@@ -270,6 +270,12 @@ body {
   pointer-events: auto;
 }
 
+@media (max-width: 900px) {
+  .search-box.active input {
+    display: none;
+  }
+}
+
 .search-box input::placeholder { color: #8b90a0; }
 
 /* ── CART MODAL ── */

@@ -20,11 +20,42 @@ function initSearch() {
   if (!searchBox || !searchToggle || !searchInput) return;
 
   searchToggle.addEventListener('click', () => {
+  if (window.innerWidth <= 900) {
+    // На мобилке сразу показываем дропдаун снизу
+    const v = searchInput.value.trim();
+    dropdown.style.display = 'block';
+    dropdown.innerHTML = `
+      <div style="padding:16px;">
+        <input id="mobile-search-input" placeholder="Поиск товаров..." style="
+          width:100%; background:#1e2433; border:1px solid #2a2f3f;
+          border-radius:12px; padding:12px 16px; color:white;
+          font-family:'DM Sans',sans-serif; font-size:15px; outline:none;
+        ">
+      </div>
+      <div id="mobile-search-results"></div>
+    `;
+    const mobileInput = document.getElementById('mobile-search-input');
+    mobileInput.focus();
+    mobileInput.addEventListener('input', () => {
+      const q = mobileInput.value.trim();
+      if (q.length < 2) {
+        document.getElementById('mobile-search-results').innerHTML = '';
+        return;
+      }
+      showSuggestions(q, document.getElementById('mobile-search-results'));
+    });
+    mobileInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && mobileInput.value.trim()) {
+        window.location.href = `catalog.html?search=${encodeURIComponent(mobileInput.value.trim())}`;
+      }
+    });
+  } else {
     searchBox.classList.toggle('active');
     if (searchBox.classList.contains('active')) {
       setTimeout(() => searchInput.focus(), 200);
     }
-  });
+  }
+});
 
   document.addEventListener('click', e => {
     if (!searchBox.contains(e.target)) {
