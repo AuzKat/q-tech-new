@@ -608,7 +608,9 @@ body {
 
   .cart-modal {
     width: 300px;
-    right: 50px;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
