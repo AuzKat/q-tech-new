@@ -49,22 +49,47 @@ function initSearch() {
   });
 
   // Создаём дропдаун один раз
-  const dropdown = document.createElement('div');
-  dropdown.id = 'search-dropdown';
-  dropdown.style.cssText = `
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0; right: 0;
-    background: #11182B;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px;
-    overflow: hidden;
-    z-index: 999;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-    display: none;
-  `;
-  searchBox.style.position = 'relative';
-  searchBox.appendChild(dropdown);
+const dropdown = document.createElement('div');
+dropdown.id = 'search-dropdown';
+
+const isMobile = () => window.innerWidth <= 900;
+
+function positionDropdown() {
+  if (isMobile()) {
+    dropdown.style.cssText = `
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #11182B;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      z-index: 9999;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+      display: none;
+      max-height: 70vh;
+      overflow-y: auto;
+    `;
+    document.body.appendChild(dropdown);
+  } else {
+    dropdown.style.cssText = `
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0; right: 0;
+      background: #11182B;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      overflow: hidden;
+      z-index: 999;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      display: none;
+    `;
+    searchBox.style.position = 'relative';
+    searchBox.appendChild(dropdown);
+  }
+}
+
+positionDropdown();
+window.addEventListener('resize', positionDropdown);
 
   function showSuggestions(query) {
     if (typeof PRODUCTS === 'undefined') return;
@@ -204,7 +229,7 @@ async function initAdminLink() {
     if (mobileMenu) {
       const link = document.createElement('a');
       link.href = 'admin.html';
-      link.textContent = '⚙️ Админ панель';
+      link.textContent = 'Админ-панель';
       link.style.color = '#01C38D';
       mobileMenu.appendChild(link);
     }
