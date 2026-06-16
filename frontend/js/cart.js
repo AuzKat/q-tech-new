@@ -109,25 +109,30 @@ function initCartUI() {
 
 
   /* open / close */
-  toggle.addEventListener('click', () => {
-    modal.classList.toggle('active');
-    if (modal.classList.contains('active')) {
-      renderCartModal();
-      if (window.innerWidth <= 600) {
-        document.body.style.overflow = 'hidden';
-      }
-    } else {
-      document.body.style.overflow = '';
-      const overlay = document.getElementById('cart-overlay');
-      if (overlay) overlay.remove();
+  toggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  modal.classList.toggle('active');
+  if (modal.classList.contains('active')) {
+    renderCartModal();
+    if (window.innerWidth <= 600) {
+      document.body.style.overflow = 'hidden';
     }
-  });
+  } else {
+    document.body.style.overflow = '';
+    const overlay = document.getElementById('cart-overlay');
+    if (overlay) overlay.remove();
+  }
+});
 
-  document.addEventListener('click', e => {
-    if (!modal.contains(e.target) && !toggle.contains(e.target)) {
-      modal.classList.remove('active');
-    }
-  }, { capture: false });
+document.addEventListener('click', e => {
+  if (e.target.id === 'cart-overlay') return;
+  if (!modal.contains(e.target) && !toggle.contains(e.target)) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    const overlay = document.getElementById('cart-overlay');
+    if (overlay) overlay.remove();
+  }
+}, { capture: false });
 
   /* update badge */
   function updateBadge() {
