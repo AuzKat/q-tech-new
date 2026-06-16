@@ -685,7 +685,7 @@ input[type="date"].acc-input::-webkit-datetime-edit {
 
   /* Таб-контент: отступы как у страницы */
   .acc-tab {
-    padding: 24px 0 0;
+    padding: 24px 16px 0;
   }
 
   /* ── МОБИЛЬНАЯ ШАПКА ПРОФИЛЯ ── */
