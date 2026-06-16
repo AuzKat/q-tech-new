@@ -94,13 +94,13 @@ function positionDropdown() {
   if (isMobile()) {
     dropdown.style.cssText = `
       position: fixed;
-      bottom: 0; left: 0; right: 0;
+      top: 70px; left: 0; right: 0;
       background: #11182B;
       border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px 20px 0 0;
+      border-radius: 0 0 20px 20px;
       overflow: hidden;
       z-index: 9999;
-      box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
       display: none;
       max-height: 70vh;
       overflow-y: auto;
@@ -127,7 +127,7 @@ function positionDropdown() {
 positionDropdown();
 window.addEventListener('resize', positionDropdown);
 
-  function showSuggestions(query) {
+  function showSuggestions(query, container = dropdown) {
     if (typeof PRODUCTS === 'undefined') return;
     const q = query.toLowerCase();
     const results = PRODUCTS.filter(p =>
@@ -138,7 +138,7 @@ window.addEventListener('resize', positionDropdown);
 
     if (!results.length) { hideSuggestions(); return; }
 
-    dropdown.innerHTML = results.map(p => `
+    container.innerHTML = results.map(p => `
       <div onclick="window.location.href='product.html?id=${p.id}'" style="
         display: flex; align-items: center; gap: 12px;
         padding: 10px 16px; cursor: pointer;
@@ -163,7 +163,7 @@ window.addEventListener('resize', positionDropdown);
         Смотреть все результаты →
       </div>
     `;
-    dropdown.style.display = 'block';
+    container.style.display = 'block';
   }
 
   function hideSuggestions() {
