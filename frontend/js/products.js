@@ -116,7 +116,7 @@ const PRODUCTS = [
   },
   {
     id: 4,
-    title: 'Apple iPhone XR 32Gb Silver',
+    title: 'Apple iPhone 17 Pro 256ГБ Silver',
     brand: 'Apple',
     category: 'phones',
     price: 20990,
@@ -135,13 +135,13 @@ const PRODUCTS = [
       { id: 1, colorCode: 'orange', colorName: 'Оранжевый', hex: '#E8631A' },
       { id: 4, colorCode: 'silver', colorName: 'Серебристый', hex: '#C0C0C0' },
     ],
-    description: 'Apple iPhone XR — доступный iPhone с Liquid Retina дисплеем и чипом A12 Bionic.',
+    description: 'Apple iPhone 17 Pro — доступный iPhone с Liquid Retina дисплеем и чипом A12 Bionic.',
     specs: {
-      'Экран': '6.1" Liquid Retina',
-      'Процессор': 'Apple A12 Bionic',
-      'Память': '32 ГБ',
-      'Камера': '12 МП',
-      'Батарея': '2942 мАч',
+      'Экран': '6.3" Super Retina',
+      'Процессор': 'Apple A19 Pro, 6',
+      'Память': '256 ГБ',
+      'Камера': '48+48+48 МП',
+      'Батарея': '3988 мАч',
       'ОС': 'iOS 16',
       'Цвет': 'Silver',
     }
@@ -437,7 +437,7 @@ const PRODUCTS = [
   /* ── HEADPHONES ── */
   {
     id: 13,
-    title: 'Apple AirPods Max Silver',
+    title: 'Apple AirPods Max Vanilla',
     brand: 'Apple',
     category: 'headphones',
     price: 50990,
@@ -458,7 +458,7 @@ const PRODUCTS = [
       'Пространственный звук': 'Да',
       'Батарея': 'до 20 часов',
       'Чип': 'Apple H1 (x2)',
-      'Цвет': 'Silver',
+      'Цвет': 'Vanilla',
     }
   },
   {
