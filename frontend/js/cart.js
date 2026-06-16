@@ -109,30 +109,25 @@ function initCartUI() {
 
 
   /* open / close */
-  toggle.addEventListener('click', (e) => {
-  e.stopPropagation();
-  modal.classList.toggle('active');
-  if (modal.classList.contains('active')) {
-    renderCartModal();
-    if (window.innerWidth <= 600) {
-      document.body.style.overflow = 'hidden';
+  toggle.addEventListener('click', () => {
+    modal.classList.toggle('active');
+    if (modal.classList.contains('active')) {
+      renderCartModal();
+      if (window.innerWidth <= 600) {
+        document.body.style.overflow = 'hidden';
+      }
+    } else {
+      document.body.style.overflow = '';
+      const overlay = document.getElementById('cart-overlay');
+      if (overlay) overlay.remove();
     }
-  } else {
-    document.body.style.overflow = '';
-    const overlay = document.getElementById('cart-overlay');
-    if (overlay) overlay.remove();
-  }
-});
+  });
 
-document.addEventListener('click', e => {
-  if (e.target.id === 'cart-overlay') return;
-  if (!modal.contains(e.target) && !toggle.contains(e.target)) {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-    const overlay = document.getElementById('cart-overlay');
-    if (overlay) overlay.remove();
-  }
-}, { capture: false });
+  document.addEventListener('click', e => {
+    if (!modal.contains(e.target) && !toggle.contains(e.target)) {
+      modal.classList.remove('active');
+    }
+  }, { capture: false });
 
   /* update badge */
   function updateBadge() {
@@ -158,20 +153,6 @@ function renderCartModal() {
   if (!modal) return;
 
   // Добавить overlay на мобильном
-if (window.innerWidth <= 600) {
-  let overlay = document.getElementById('cart-overlay');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.id = 'cart-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;';
-    overlay.addEventListener('click', () => {
-      modal.classList.remove('active');
-      overlay.remove();
-    });
-    document.body.appendChild(overlay);
-  }
-}
-
   const items = Cart.getAll();
 
   if (items.length === 0) {
