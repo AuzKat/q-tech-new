@@ -64,6 +64,19 @@
         <button class="acc-logout-btn" id="logout-btn">Выйти из аккаунта</button>
     </aside>
 
+     <!-- MOBILE HEADER -->
+    <div class="acc-mobile-header">
+        <div class="acc-avatar"><span id="acc-avatar-initials-mobile">ИИ</span></div>
+        <div class="acc-avatar-info">
+            <div class="acc-name" id="acc-name-display-mobile">Загрузка...</div>
+            <div class="acc-email" id="acc-email-display-mobile"></div>
+        </div>
+    </div>
+
+    <div class="account-main">
+        <!-- Обзор -->
+        <div class="acc-tab active" id="tab-overview">
+
     <div class="account-main">
         <!-- Обзор -->
         <div class="acc-tab active" id="tab-overview">
@@ -138,6 +151,30 @@
     </div>
 </div>
 
+<!-- MOBILE TAB BAR -->
+<nav class="acc-mobile-tabbar">
+    <button class="acc-tabbar-item active" data-tab="overview">
+        <span class="tab-icon">📊</span>
+        Обзор
+    </button>
+    <button class="acc-tabbar-item" data-tab="orders">
+        <span class="tab-icon">📦</span>
+        Заказы
+    </button>
+    <button class="acc-tabbar-item" data-tab="profile">
+        <span class="tab-icon">👤</span>
+        Профиль
+    </button>
+    <button class="acc-tabbar-item" data-tab="security">
+        <span class="tab-icon">🔒</span>
+        Защита
+    </button>
+    <button class="acc-tabbar-item" data-tab="notifications">
+        <span class="tab-icon">🔔</span>
+        Уведом.
+    </button>
+</nav>
+
 <footer class="footer-wrap">
     <div class="container footer-grid">
         <div class="footer-block"><h4>Каталог</h4><div class="footer-columns"><div class="footer-column"><a href="catalog.html?category=phones">Смартфоны</a><a href="catalog.html?category=laptops">Ноутбуки</a><a href="catalog.html?category=headphones">Наушники</a></div><div class="footer-column"><a href="catalog.html?category=watch">Умные часы</a><a href="catalog.html?category=dryer">Фены</a><a href="catalog.html?category=vacuum">Пылесосы</a></div></div></div>
@@ -168,6 +205,10 @@
             document.getElementById('acc-email-display').textContent = currentUser.email;
             const initials = (currentUser.name || currentUser.email).substring(0, 2).toUpperCase();
             document.getElementById('acc-avatar-initials').textContent = initials;
+            document.getElementById('acc-avatar-initials').textContent = initials;
+            document.getElementById('acc-name-display-mobile').textContent = currentUser.name || currentUser.email;
+            document.getElementById('acc-email-display-mobile').textContent = currentUser.email;
+            document.getElementById('acc-avatar-initials-mobile').textContent = initials;
             document.getElementById('profile-name').value = currentUser.name || '';
             document.getElementById('profile-email').value = currentUser.email;
             return true;
@@ -291,14 +332,16 @@
         await loadOrders();
         
         // Вкладки
-        document.querySelectorAll('.acc-menu-item').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.dataset.tab;
-                document.querySelectorAll('.acc-menu-item').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.acc-tab').forEach(t => t.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(`tab-${tabId}`).classList.add('active');
+        function switchTab(tabId) {
+            document.querySelectorAll('.acc-menu-item, .acc-tabbar-item').forEach(b => {
+                b.classList.toggle('active', b.dataset.tab === tabId);
             });
+            document.querySelectorAll('.acc-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        document.querySelectorAll('.acc-menu-item, .acc-tabbar-item').forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
         });
         
         // Фильтры заказов
