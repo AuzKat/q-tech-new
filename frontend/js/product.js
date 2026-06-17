@@ -138,7 +138,12 @@ function renderColorSelector(p) {
     swatch.addEventListener('click', () => {
       const targetId = Number(swatch.dataset.id);
       if (targetId === p.id) return; // already on this variant
-      window.location.href = `product.html?id=${targetId}`;
+      const newProduct = getProductById(targetId);
+      if (newProduct) {
+        window.history.pushState({}, '', `product.html?id=${targetId}`);
+        renderProduct(newProduct);
+        renderRelated(newProduct);
+      }
     });
     swatch.addEventListener('mouseenter', () => {
       if (nameEl) nameEl.textContent = swatch.dataset.name;
