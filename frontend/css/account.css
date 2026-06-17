@@ -751,8 +751,9 @@ input[type="date"].acc-input::-webkit-datetime-edit {
   }
 
   .acc-tabbar-item .tab-icon {
-    font-size: 20px;
-    line-height: 1;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
   }
 
   .acc-tabbar-item.active {
