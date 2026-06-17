@@ -389,9 +389,9 @@ function buildBadgeFilter(parentSelector) {
     : PRODUCTS.filter(p => p.category === activeCategory);
 
   const badgeDefs = [
-    { key: 'hit',  label: '🔥 Хиты' },
-    { key: 'new',  label: '✨ Новинки' },
-    { key: 'sale', label: '🏷️ Скидки' },
+    { key: 'hit',  label: 'Хиты' },
+    { key: 'new',  label: 'Новинки' },
+    { key: 'sale', label: 'Скидки' },
   ];
 
   const available = badgeDefs.filter(b => pool.some(p => p.badge === b.key));
