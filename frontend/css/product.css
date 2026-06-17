@@ -52,6 +52,7 @@
   overflow: hidden;
   margin-bottom: 16px;
   position: relative;
+  isolation: isolate;
 }
 
 .product-main-img img {

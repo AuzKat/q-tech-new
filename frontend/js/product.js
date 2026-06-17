@@ -99,9 +99,9 @@ function renderProduct(p) {
   /* Gallery */
   renderGallery(p);
 
-  /* Color variants */
+  /* Color & Storage variants */
   renderColorSelector(p);
-
+  renderStorageSelector(p);
   /* Reviews */
   renderProductReviews(p);
 
@@ -109,18 +109,60 @@ function renderProduct(p) {
   initProductCartBtn(p);
 }
 
-/* ── COLOR SELECTOR ── */
+/* ── STATE ── */
+let _selectedColor   = null;
+let _selectedStorage = null;
 
+/* ── COLOR SELECTOR ── */
 function renderColorSelector(p) {
   const selectorEl = document.getElementById('product-color-selector');
   const swatchesEl = document.getElementById('color-swatches');
   const nameEl     = document.getElementById('color-selected-name');
 
-  if (!selectorEl || !swatchesEl || !p.colorVariants || p.colorVariants.length < 2) return;
+  if (!selectorEl || !swatchesEl || !p.colorVariants || !p.colorVariants.length) return;
 
+  // Если новая структура (без id у варианта) — используем новую логику
+  if (p.colorVariants[0].images) {
+    selectorEl.style.display = '';
+    _selectedColor = p.colorVariants[0];
+    if (nameEl) nameEl.textContent = _selectedColor.colorName;
+
+    function renderSwatches() {
+      swatchesEl.innerHTML = p.colorVariants.map(v => `
+        <div
+          class="color-swatch ${v.colorCode === _selectedColor.colorCode ? 'active' : ''}"
+          style="background:${v.hex};"
+          title="${v.colorName}"
+          data-code="${v.colorCode}"
+          data-name="${v.colorName}"
+        ></div>
+      `).join('');
+
+      swatchesEl.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.addEventListener('click', () => {
+          _selectedColor = p.colorVariants.find(v => v.colorCode === swatch.dataset.code);
+          if (nameEl) nameEl.textContent = _selectedColor.colorName;
+          // Обновляем галерею
+          const fakeProduct = { ...p, images: _selectedColor.images };
+          renderGallery(fakeProduct);
+          renderSwatches();
+        });
+        swatch.addEventListener('mouseenter', () => {
+          if (nameEl) nameEl.textContent = swatch.dataset.name;
+        });
+        swatch.addEventListener('mouseleave', () => {
+          if (nameEl) nameEl.textContent = _selectedColor.colorName;
+        });
+      });
+    }
+
+    renderSwatches();
+    return;
+  }
+
+  // Старая логика (с id) — для ноутбуков и других
+  if (p.colorVariants.length < 2) return;
   selectorEl.style.display = '';
-
-  // Find current variant by matching product id
   const currentVariant = p.colorVariants.find(v => v.id === p.id) || p.colorVariants[0];
   if (nameEl) nameEl.textContent = currentVariant.colorName;
 
@@ -137,7 +179,7 @@ function renderColorSelector(p) {
   swatchesEl.querySelectorAll('.color-swatch').forEach(swatch => {
     swatch.addEventListener('click', () => {
       const targetId = Number(swatch.dataset.id);
-      if (targetId === p.id) return; // already on this variant
+      if (targetId === p.id) return;
       const newProduct = getProductById(targetId);
       if (newProduct) {
         window.history.pushState({}, '', `product.html?id=${targetId}`);
@@ -152,6 +194,86 @@ function renderColorSelector(p) {
       if (nameEl) nameEl.textContent = currentVariant.colorName;
     });
   });
+}
+
+/* ── STORAGE SELECTOR ── */
+function renderStorageSelector(p) {
+  if (!p.storageVariants || !p.storageVariants.length) return;
+
+  // Ищем существующий блок или создаём новый
+  let storageEl = document.getElementById('product-storage-selector');
+  if (!storageEl) {
+    storageEl = document.createElement('div');
+    storageEl.id = 'product-storage-selector';
+    // Вставляем после color selector
+    const colorSel = document.getElementById('product-color-selector');
+    if (colorSel) colorSel.after(storageEl);
+    else document.getElementById('product-cart-action')?.before(storageEl);
+  }
+
+  _selectedStorage = p.storageVariants[0];
+
+  function renderButtons() {
+    storageEl.innerHTML = `
+      <div style="margin-bottom:16px;">
+        <div style="font-size:13px;color:#9795B5;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;">
+          Память
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          ${p.storageVariants.map(v => `
+            <button
+              class="storage-btn ${v.storage === _selectedStorage.storage ? 'active' : ''}"
+              data-storage="${v.storage}"
+              data-price="${v.price}"
+              data-old="${v.oldPrice || ''}"
+              style="
+                padding: 8px 16px;
+                border-radius: 10px;
+                border: 1.5px solid ${v.storage === _selectedStorage.storage ? '#01C38D' : '#2a2f3f'};
+                background: ${v.storage === _selectedStorage.storage ? 'rgba(1,195,141,0.1)' : 'transparent'};
+                color: ${v.storage === _selectedStorage.storage ? '#01C38D' : '#9795B5'};
+                font-family: 'DM Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: 0.2s;
+              "
+            >${v.storage}</button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    storageEl.querySelectorAll('.storage-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        _selectedStorage = p.storageVariants.find(v => v.storage === btn.dataset.storage);
+
+        // Обновляем цену
+        const priceEl   = document.getElementById('product-price');
+        const oldPriceEl = document.getElementById('product-price-old');
+        const saveEl    = document.getElementById('product-price-save');
+        if (priceEl) priceEl.textContent = `${formatPrice(_selectedStorage.price)} ₽`;
+        if (oldPriceEl) {
+          if (_selectedStorage.oldPrice) {
+            oldPriceEl.textContent = `${formatPrice(_selectedStorage.oldPrice)} ₽`;
+            oldPriceEl.style.display = '';
+            if (saveEl) saveEl.textContent = `Выгода: ${formatPrice(_selectedStorage.oldPrice - _selectedStorage.price)} ₽`;
+          } else {
+            oldPriceEl.style.display = 'none';
+            if (saveEl) saveEl.textContent = '';
+          }
+        }
+
+        renderButtons();
+      });
+    });
+  }
+
+  renderButtons();
+
+  // Устанавливаем начальную цену по первому варианту
+  const priceEl = document.getElementById('product-price');
+  if (priceEl) priceEl.textContent = `от ${formatPrice(_selectedStorage.price)} ₽`;
 }
 
 /* ── GALLERY ── */
