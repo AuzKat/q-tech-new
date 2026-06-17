@@ -156,23 +156,23 @@
 <!-- MOBILE TAB BAR -->
 <nav class="acc-mobile-tabbar">
     <button class="acc-tabbar-item active" data-tab="overview">
-        <span class="tab-icon">📊</span>
+        <img class="tab-icon" src="img_for_account/dashboard-stats-active.svg" data-default="img_for_account/dashboard-stats-default.svg" data-active="img_for_account/dashboard-stats-active.svg" alt="Обзор">
         Обзор
     </button>
     <button class="acc-tabbar-item" data-tab="orders">
-        <span class="tab-icon">📦</span>
+        <img class="tab-icon" src="img_for_account/cart-check-default.svg" data-default="img_for_account/cart-check-default.svg" data-active="img_for_account/cart-check-active.svg" alt="Заказы">
         Заказы
     </button>
     <button class="acc-tabbar-item" data-tab="profile">
-        <span class="tab-icon">👤</span>
+        <img class="tab-icon" src="img_for_account/user-avatar-default.svg" data-default="img_for_account/user-avatar-default.svg" data-active="img_for_account/user-avatar-active.svg" alt="Профиль">
         Профиль
     </button>
     <button class="acc-tabbar-item" data-tab="security">
-        <span class="tab-icon">🔒</span>
+        <img class="tab-icon" src="img_for_account/shield-19-default.svg" data-default="img_for_account/shield-19-default.svg" data-active="img_for_account/shield-19-active.svg" alt="Защита">
         Защита
     </button>
     <button class="acc-tabbar-item" data-tab="notifications">
-        <span class="tab-icon">🔔</span>
+        <img class="tab-icon" src="img_for_account/notification-default.svg" data-default="img_for_account/notification-default.svg" data-active="img_for_account/notification-active.svg" alt="Уведом.">
         Уведом.
     </button>
 </nav>
@@ -336,7 +336,12 @@
         // Вкладки
         function switchTab(tabId) {
             document.querySelectorAll('.acc-menu-item, .acc-tabbar-item').forEach(b => {
-                b.classList.toggle('active', b.dataset.tab === tabId);
+                const isActive = b.dataset.tab === tabId;
+                b.classList.toggle('active', isActive);
+                const icon = b.querySelector('.tab-icon');
+                if (icon && icon.dataset.default) {
+                    icon.src = isActive ? icon.dataset.active : icon.dataset.default;
+                }
             });
             document.querySelectorAll('.acc-tab').forEach(t => t.classList.remove('active'));
             document.getElementById(`tab-${tabId}`).classList.add('active');
