@@ -145,11 +145,11 @@ const PRODUCTS = [
         colorName: 'Чёрный титан',
         hex: '#2C2C2E',
         images: [
-          'img/black-16-1ProMax.webp',
-          'img/black-16-2ProMax.webp',
-          'img/black-16-3ProMax.webp',
-          'img/black-16-4ProMax.webp',
-          'img/black-16-5ProMax.webp',
+          'img/black-16-1-ProMax.webp',
+          'img/black-16-2-ProMax.webp',
+          'img/black-16-3-ProMax.webp',
+          'img/black-16-4-ProMax.webp',
+          'img/black-16-5-ProMax.webp',
         ],
       },
       {
